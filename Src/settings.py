@@ -1,14 +1,18 @@
 import os
 from pathlib import Path
+import django_heroku
+django_heroku.settings(locals())
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-+mab4$bvj-=4_^xsk&zpr&_d3u1#337_cz86$y-o7n&svagm8^'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+# CORS_ORIGIN_ALLOW_ANY = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Application definition
@@ -30,6 +34,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     "rest_auth.registration",
     "corsheaders",
+    "whitenoise"
 ]
 SITE_ID = 1
 MIDDLEWARE = [
@@ -42,6 +47,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'Src.urls'
@@ -124,20 +130,15 @@ AUTHENTICATION_BACKENDS = (
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-# REST_FRAMEWORK = {
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated'
-#     ]
-# }
+
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny'
     ]
 }
+
 AUTH_USER_MODEL = 'App.User'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-# CORS_ALLOW_ALL_ORIGINS: True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
